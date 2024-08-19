@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Biodata {
+  biodataId           Int      @id @default(autoincrement())
+  name                String
+  noKtp               String
+  tempatLahir         String
+  tanggalLahir        DateTime
+  jenisKelamin        String
+  agama               String
+  golonganDarah       String
+  statusPerkawinan    String
+  alamatKtp           String
+  alamatTinggal       String
+  email               String   @unique
+  noTelpon            String
+  skill               String
+  bersediaDitempatkan Boolean
+  expectedSalary      Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Pendidikan Pendidikan[]
+  Pelatihan  Pelatihan[]
+  Pekerjaan  Pekerjaan[]
+}
+
+model Pendidikan {
+  pendidikanId  Int    @id @default(autoincrement())
+  biodataId     Int
+  jenjang       String
+  namaInstitusi String
+  jurusan       String
+  tahunLulus    String
+  nilaiAkhir    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Biodata Biodata @relation(fields: [biodataId], references: [biodataId])
+}
+
+model Pelatihan {
+  pelatihanId   Int     @id @default(autoincrement())
+  biodataId     Int
+  namaPelatihan String
+  sertifikat    Boolean
+  tahun         String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Biodata Biodata @relation(fields: [biodataId], references: [biodataId])
+}
+
+model Pekerjaan {
+  pekerjaanId    Int    @id @default(autoincrement())
+  biodataId      Int
+  namaPerusahaan String
+  posisi         String
+  pendapatan     String
+  tahun          String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Biodata Biodata @relation(fields: [biodataId], references: [biodataId])
+}
