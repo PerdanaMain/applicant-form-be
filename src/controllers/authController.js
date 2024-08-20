@@ -21,13 +21,13 @@ const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = await User.createUser({
+    await User.createUser({
       email,
       password: hashedPassword,
       roleId: 2,
     });
 
-    return res.status(201).json({ message: "User created", user: newUser });
+    return res.status(201).json({ message: "User created" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
