@@ -1,8 +1,15 @@
 const express = require("express");
 const { register, login, logout } = require("../controllers/authController");
 const { refreshToken } = require("../controllers/refreshToken");
-const { create, show } = require("../controllers/biodataController");
+const {
+  create,
+  show,
+  index,
+  update,
+  destroy,
+} = require("../controllers/biodataController");
 const { verifyToken } = require("../middlewares/verifyToken");
+const { verifyAdmin } = require("../middlewares/verifyAdmin");
 const biodataValidator = require("../middlewares/biodataValidator");
 
 const router = express.Router();
@@ -25,5 +32,9 @@ router.delete("/auth/logout", logout);
 // Biodata API
 router.get("/biodata", verifyToken, show);
 router.post("/biodata", verifyToken, biodataValidator, create);
+
+router.get("/biodatas", verifyAdmin, index);
+router.put("/biodata/:biodataId", verifyAdmin, update);
+router.delete("/biodata/:biodataId", verifyAdmin, destroy);
 
 module.exports = router;

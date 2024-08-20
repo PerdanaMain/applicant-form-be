@@ -72,7 +72,7 @@ model Pendidikan {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Biodata Biodata @relation(fields: [biodataId], references: [biodataId])
+  Biodata Biodata @relation(fields: [biodataId], references: [biodataId], onDelete: Cascade)
 }
 
 model Pelatihan {
@@ -85,7 +85,7 @@ model Pelatihan {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Biodata Biodata @relation(fields: [biodataId], references: [biodataId])
+  Biodata Biodata @relation(fields: [biodataId], references: [biodataId], onDelete: Cascade)
 }
 
 model Pekerjaan {
@@ -99,5 +99,5 @@ model Pekerjaan {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Biodata Biodata @relation(fields: [biodataId], references: [biodataId])
+  Biodata Biodata @relation(fields: [biodataId], references: [biodataId], onDelete: Cascade)
 }
