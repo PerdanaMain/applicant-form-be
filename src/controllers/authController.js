@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
   try {
@@ -27,14 +28,12 @@ const register = async (req, res) => {
     });
 
     return res.status(201).json({ message: "User created", user: newUser });
-
-    // Check if the email is already registered
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
 
-const login = (req, res, next) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -44,19 +43,76 @@ const login = (req, res, next) => {
         .json({ message: "Email and password are required" });
     }
 
-    const user = User.getUserByEmail(email);
+    const user = await User.getUserByEmail(email);
 
     if (!user) {
-      return res.status(400).json({ message: "Email is not registered" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const validPassword = bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+    const accessToken = jwt.sign(
+      {
+        userId: user.id,
+        email: user.email,
+        roleId: user.roleId,
+        roleName: user.Role.roleName,
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
 
-    if (!validPassword) {
-      return res.status(400).json({ message: "Password is incorrect" });
+    const refreshToken = jwt.sign(
+      {
+        userId: user.id,
+        email: user.email,
+        roleId: user.roleId,
+        roleName: user.Role.roleName,
+      },
+      process.env.REFRESH_TOKEN_SECRET,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    await User.updateRefreshToken(user.userId, refreshToken);
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
+      message: "Login successful",
+      accessToken,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      return res.status(204).json({ message: "Invalid token" });
     }
 
-    return res.status(200).json({ message: "Login successful" });
+    const user = await User.getUserByRefreshToken(refreshToken);
+    if (!user) {
+      return res.status(400).json({ message: "Invalid token" });
+    }
+
+    await User.updateRefreshToken(user.userId, null);
+
+    res.clearCookie("refreshToken");
+
+    return res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -65,4 +121,5 @@ const login = (req, res, next) => {
 module.exports = {
   register,
   login,
+  logout,
 };
