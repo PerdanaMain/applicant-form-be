@@ -1,6 +1,17 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+const getUserById = async (userId) => {
+  return await prisma.user.findUnique({
+    where: {
+      userId,
+    },
+    include: {
+      Role: true,
+    },
+  });
+};
+
 const getUserByEmail = async (email) => {
   return await prisma.user.findUnique({
     where: {
@@ -46,4 +57,5 @@ module.exports = {
   createUser,
   updateRefreshToken,
   getUserByRefreshToken,
+  getUserById,
 };

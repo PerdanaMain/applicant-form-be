@@ -17,7 +17,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Role Role @relation(fields: [roleId], references: [roleId])
+  Role    Role     @relation(fields: [roleId], references: [roleId])
+  Biodata Biodata?
 }
 
 model Role {
@@ -30,19 +31,22 @@ model Role {
 }
 
 model Biodata {
-  biodataId           Int      @id @default(autoincrement())
-  name                String
+  biodataId           Int     @id @default(autoincrement())
+  userId              Int     @unique
+  nama                String
+  posisi              String
   noKtp               String
   tempatLahir         String
-  tanggalLahir        DateTime
+  tanggalLahir        String
   jenisKelamin        String
   agama               String
   golonganDarah       String
   statusPerkawinan    String
   alamatKtp           String
   alamatTinggal       String
-  email               String   @unique
+  email               String
   noTelpon            String
+  orangTerdekat       String
   skill               String
   bersediaDitempatkan Boolean
   expectedSalary      Int
@@ -53,6 +57,7 @@ model Biodata {
   Pendidikan Pendidikan[]
   Pelatihan  Pelatihan[]
   Pekerjaan  Pekerjaan[]
+  User       User         @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 
 model Pendidikan {
@@ -62,7 +67,7 @@ model Pendidikan {
   namaInstitusi String
   jurusan       String
   tahunLulus    String
-  nilaiAkhir    String
+  nilaiAkhir    Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -88,7 +93,7 @@ model Pekerjaan {
   biodataId      Int
   namaPerusahaan String
   posisi         String
-  pendapatan     String
+  pendapatan     Int
   tahun          String
 
   createdAt DateTime @default(now())

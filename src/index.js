@@ -3,6 +3,7 @@ dotenv.config();
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 const router = require("./routes/router");
 const prefix = "/api/v1";
 
@@ -10,6 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 app.use(prefix, router);
 
