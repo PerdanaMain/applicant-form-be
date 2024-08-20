@@ -46,7 +46,7 @@ const login = async (req, res) => {
     const user = await User.getUserByEmail(email);
 
     if (!user) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: "User not found" });
     }
 
     const match = await bcrypt.compare(password, user.password);
@@ -66,25 +66,10 @@ const login = async (req, res) => {
       }
     );
 
-    const refreshToken = jwt.sign(
-      {
-        userId: user.userId,
-        email: user.email,
-        roleId: user.roleId,
-        roleName: user.Role.roleName,
-      },
-      process.env.REFRESH_TOKEN_SECRET,
-      {
-        expiresIn: "1d",
-      }
-    );
-
-    await User.updateRefreshToken(user.userId, refreshToken);
-
-    res.cookie("refreshToken", refreshToken, {
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 1 * 60 * 60 * 1000,
     });
 
     return res.status(200).json({
@@ -98,20 +83,11 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) {
+    const token = req.cookies.accessToken;
+    if (!token) {
       return res.status(204).json({ message: "Invalid token" });
     }
-
-    const user = await User.getUserByRefreshToken(refreshToken);
-    if (!user) {
-      return res.status(400).json({ message: "Invalid token" });
-    }
-
-    await User.updateRefreshToken(user.userId, null);
-
-    res.clearCookie("refreshToken");
-
+    res.clearCookie("accessToken");
     return res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     return res.status(500).json({ message: error.message });

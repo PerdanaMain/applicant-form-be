@@ -4,7 +4,6 @@ CREATE TABLE `User` (
     `roleId` INTEGER NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
-    `refreshToken` TEXT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -99,10 +98,10 @@ ALTER TABLE `User` ADD CONSTRAINT `User_roleId_fkey` FOREIGN KEY (`roleId`) REFE
 ALTER TABLE `Biodata` ADD CONSTRAINT `Biodata_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Pendidikan` ADD CONSTRAINT `Pendidikan_biodataId_fkey` FOREIGN KEY (`biodataId`) REFERENCES `Biodata`(`biodataId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Pendidikan` ADD CONSTRAINT `Pendidikan_biodataId_fkey` FOREIGN KEY (`biodataId`) REFERENCES `Biodata`(`biodataId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Pelatihan` ADD CONSTRAINT `Pelatihan_biodataId_fkey` FOREIGN KEY (`biodataId`) REFERENCES `Biodata`(`biodataId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Pelatihan` ADD CONSTRAINT `Pelatihan_biodataId_fkey` FOREIGN KEY (`biodataId`) REFERENCES `Biodata`(`biodataId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Pekerjaan` ADD CONSTRAINT `Pekerjaan_biodataId_fkey` FOREIGN KEY (`biodataId`) REFERENCES `Biodata`(`biodataId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Pekerjaan` ADD CONSTRAINT `Pekerjaan_biodataId_fkey` FOREIGN KEY (`biodataId`) REFERENCES `Biodata`(`biodataId`) ON DELETE CASCADE ON UPDATE CASCADE;

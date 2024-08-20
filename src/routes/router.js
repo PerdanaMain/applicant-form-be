@@ -1,6 +1,5 @@
 const express = require("express");
 const { register, login, logout } = require("../controllers/authController");
-const { refreshToken } = require("../controllers/refreshToken");
 const {
   create,
   show,
@@ -26,7 +25,6 @@ router.get("/", (req, res) => {
 // Auth API
 router.post("/auth/register", register);
 router.post("/auth/login", login);
-router.get("/auth/token", refreshToken);
 router.delete("/auth/logout", logout);
 
 // Biodata API

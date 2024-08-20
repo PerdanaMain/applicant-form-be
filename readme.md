@@ -5,9 +5,11 @@
 3. Run the following command in the terminal
    `bash npm install`
 4. Run the following command in the terminal
-   `bash npm start`
-5. Open the browser and go to the following URL
-   `bash http://localhost:5000/api/v1/`
+   `bash npx prisma migrate generate`
+5. Run the following command in the terminal
+   `bash npx prisma migrate dev`
+6. Run the following command in the terminal
+   `bash npm run dev`
 
 ### Information about the project
 
